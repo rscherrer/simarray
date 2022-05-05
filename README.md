@@ -83,7 +83,7 @@ Once you have prepared your lists of parameter values (see above), just run the 
 bash prepare_sims.sh param1.txt param2.txt param3.txt
 ```
 
-This will create one folder for each simulation in the working directory and copy a corresponding, updated version of the `parameters.txt` template file within it (note that `parameters.txt` must be present in the working directory). Each folder starts with `sim_` and will be named after its parameter values. For example, the folder for simulation 1 above will have the name `sim_param1_1_param2_2_param3_3_3_3`.
+This will create one folder for each simulation in the working directory and copy a corresponding, updated version of the `parameters.txt` template file within it (note that `parameters.txt` must be present in the working directory). Each folder starts with `sim_` and will be named after its parameter values. For example, the folder for simulation 1 above will have the name `sim_param1_1_param2_1_param3_1_1_1`.
 
 Also note that in case a mistake was made, this program will not overwrite existing directories, so it is best to remove simulation folders before re-running it:
 
