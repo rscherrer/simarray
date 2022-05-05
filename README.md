@@ -4,7 +4,11 @@ Scripts to set up arrays of simulation folders.
 
 ## Goal
 
-This set of scripts is supposed to help quickly generate hundreds of folders that will each contain individual simulations of a given program, each with possibly different parameter values. Specifically, we assume that the simulation program (whichever it is) takes a parameter input file `parameters.txt` as argument. This file contains, on each line, the name of a parameter name and the value that parameter has to take, e.g.
+This set of scripts is supposed to help quickly generate hundreds of folders that will each contain individual simulations of a given program, each with possibly different parameter values. 
+
+## Preparation
+
+We assume that the simulation program (whichever it is) takes a parameter input file `parameters.txt` as argument. This file contains, on each line, the name of a parameter and the value that parameter has to take, e.g.
 
 ```
 param1 5
@@ -69,7 +73,7 @@ and `param3.txt` will look like
 3 3 3
 ```
 
-Note: these scripts do not create combinations of parameters, they only read the combinations you want to run and set up the simulation folders for you. You must create the combinations beforehand when you write the lists of parameter values (e.g. `param1.txt`, `param2.txt`, `param3.txt`). This is because while some use-cases may require exploring all combinations of a given set of parameter values, other use-cases may require running only subsets of all possible combinations, or some very specific combinations, for which a combination-generating program may not be adequate. For that reason I prefer to keep the generation of parameter combinations and the set-up of simulation arrays separate.
+Note: these scripts do not create combinations of parameters, they only read the combinations you want to run and set up the simulation folders for you. You must create the combinations beforehand, i.e. when you write the lists of parameter values (e.g. `param1.txt`, `param2.txt`, `param3.txt`). This is because while some use-cases may require exploring all combinations of a given set of parameter values, other use-cases may require running only subsets of all possible combinations, or some very specific combinations, for which a combination-generating program may not be adequate. For that reason I prefer to keep the generation of parameter combinations and the set-up of simulation arrays separate (this repository is only about the latter).
 
 ## Usage
 
@@ -79,7 +83,7 @@ Once you have prepared your lists of parameter values (see above), just run the 
 bash prepare_sims.sh param1.txt param2.txt param3.txt
 ```
 
-This will create one folder for each simulation in the working directory and copy a corresponding, updated version of the `parameters.txt` template file within it (note that `parameters.txt` must be present in the working directory). Each folder starts with `sim_` and will be named after its parameter values. For example, the folder for simulation 1 above will have the name `sim_param1_1_param2_2_param3_3_3_3`.
+This will create one folder for each simulation in the working directory and copy a corresponding, updated version of the `parameters.txt` template file within it (note that `parameters.txt` must be present in the working directory). Each folder starts with `sim_` and will be named after its parameter values. For example, the folder for simulation 1 above will have the name `sim_param1_1_param2_1_param3_1_1_1`.
 
 Also note that in case a mistake was made, this program will not overwrite existing directories, so it is best to remove simulation folders before re-running it:
 
