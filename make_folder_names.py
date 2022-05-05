@@ -28,7 +28,7 @@ for filename in sys.argv[1:]:
 		for count, line in enumerate(f):
 
 			# Make an entry comprising parameter name and current value
-			entry = "_" + parname + "_" + line.strip()
+			entry = "_" + parname + "_" + re.sub(' ', '_', line.strip())
 	
 			# If not already done...
 			if a == 0:
