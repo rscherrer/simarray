@@ -8,7 +8,7 @@ This set of scripts is supposed to help quickly generate hundreds of folders tha
 
 ## Preparation
 
-We assume that the simulation program (whichever it is) takes a parameter input file `parameters.txt` as argument. This file contains, on each line, the name of a parameter name and the value that parameter has to take, e.g.
+We assume that the simulation program (whichever it is) takes a parameter input file `parameters.txt` as argument. This file contains, on each line, the name of a parameter and the value that parameter has to take, e.g.
 
 ```
 param1 5
