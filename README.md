@@ -4,7 +4,11 @@ Scripts to set up arrays of simulation folders.
 
 ## Goal
 
-This set of scripts is supposed to help quickly generate hundreds of folders that will each contain individual simulations of a given program, each with possibly different parameter values. Specifically, we assume that the simulation program (whichever it is) takes a parameter input file `parameters.txt` as argument. This file contains, on each line, the name of a parameter name and the value that parameter has to take, e.g.
+This set of scripts is supposed to help quickly generate hundreds of folders that will each contain individual simulations of a given program, each with possibly different parameter values. 
+
+## Preparation
+
+We assume that the simulation program (whichever it is) takes a parameter input file `parameters.txt` as argument. This file contains, on each line, the name of a parameter name and the value that parameter has to take, e.g.
 
 ```
 param1 5
