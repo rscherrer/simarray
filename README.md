@@ -73,7 +73,7 @@ and `param3.txt` will look like
 3 3 3
 ```
 
-Note: these scripts do not create combinations of parameters, they only read the combinations you want to run and set up the simulation folders for you. You must create the combinations beforehand, i.e. when you write the lists of parameter values (e.g. `param1.txt`, `param2.txt`, `param3.txt`). This is because while some use-cases may require exploring all combinations of a given set of parameter values, other use-cases may require running only subsets of all possible combinations, or some very specific combinations, for which a combination-generating program may not be adequate. For that reason I prefer to keep the generation of parameter combinations and the set-up of simulation arrays separate.
+Note: these scripts do not create combinations of parameters, they only read the combinations you want to run and set up the simulation folders for you. You must create the combinations beforehand, i.e. when you write the lists of parameter values (e.g. `param1.txt`, `param2.txt`, `param3.txt`). This is because while some use-cases may require exploring all combinations of a given set of parameter values, other use-cases may require running only subsets of all possible combinations, or some very specific combinations, for which a combination-generating program may not be adequate. For that reason I prefer to keep the generation of parameter combinations and the set-up of simulation arrays separate (this repository is only about the latter).
 
 ## Usage
 
