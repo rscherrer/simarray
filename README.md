@@ -100,5 +100,3 @@ This repository contains:
 * `update_value.py`: a routine to change the value of a given parameter in a parameter file
 * `param1.txt`, `param2.txt`, `param3.txt`: example lists of parameter values for each parameter of interest
 * `parameters.txt`: the template parameter file for the simulation program
-
-- underscores instead of spaces
