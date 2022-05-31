@@ -19,6 +19,8 @@ do
 	fi
 done
 
+echo "Working on it..."
+
 # Read input files and combine their values into simulation folder names
 python3 make_folder_names.py "$@"
 

@@ -93,7 +93,20 @@ rm -r sim*
 
 ## Parameter file template
 
-The parameter file template contains the default parameters to pass to the program. Make sure that it contains a line and dummy value(s) for each of the parameters that will be modified by the script, as the latter will only change parameters  it can find in `parameters.txt`.
+The parameter file template contains the default parameters to pass to the program. Make sure that it contains a line and dummy value(s) for each of the parameters that will be modified by the script, as the latter will only change parameters it can find in `parameters.txt`.
+
+## Dispatching files
+
+Once the simulation folders have been created, it may be handy to copy a common additional file into every single one of them, for example a list specifying the data to save or a template job script if the simulations are to be run on a cluster (as is most likely the case).
+We provide the script `dispatch_files.sh` to do just that.
+This script can be used as follows:
+
+```
+bash dispatch_files.sh <file1> <file2> ...
+```
+
+where multiple files can be dispatched in the same call.
+Note that this will copy your files into *every* subdirectory.
 
 ## Content
 
@@ -104,6 +117,7 @@ This repository contains:
 * `update_value.py`: a routine to change the value of a given parameter in a parameter file
 * `param1.txt`, `param2.txt`, `param3.txt`: example lists of parameter values for each parameter of interest
 * `parameters.txt`: the template parameter file for the simulation program
+* `dispatch_files.sh`: additional script to copy files into all subdirectories
 
 ## About
 
