@@ -1,6 +1,6 @@
 # simarray
 
-Scripts to set up arrays of simulation folders.
+Set of scripts to create an array of simulation folders.
 
 ## Goal
 
