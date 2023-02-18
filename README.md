@@ -2,6 +2,11 @@
 
 Set of scripts to create an array of simulation folders.
 
+## Prerequisites
+
+* (optional) A program that runs with a parameter file
+* [Python](https://www.python.org) version 3.8.10 or higher
+
 ## Goal
 
 This set of scripts is supposed to help quickly generate hundreds of folders that will each contain individual simulations of a given program, each with possibly different parameter values. 
