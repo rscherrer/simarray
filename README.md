@@ -1,15 +1,28 @@
 # simarray
 
-Set of scripts to create an array of simulation folders.
+Set of scripts to create an array of simulations with lots of combinations of parameters.
 
 ## Prerequisites
 
 * (optional) A program that runs with a parameter file
 * [Python](https://www.python.org) version 3.8.10 or higher
+* Some way to run shell scripts (native in Linux, see e.g. [here](https://mspoweruser.com/different-ways-to-run-shell-script-files-on-windows/) for Windows)
 
-## Goal
+## Use
 
-This set of scripts is supposed to help quickly generate hundreds of folders that will each contain individual simulations of a given program, each with possibly different parameter values. 
+Once you have prepared your lists of parameter values (see above), just run the `prepare_sims.sh` script, and pass it the names of the files in which it has to look up parameter values:
+
+```
+bash prepare_sims.sh param1.txt param2.txt param3.txt
+```
+
+This will create one folder for each simulation in the working directory and copy a corresponding, updated version of the `parameters.txt` template file within it (note that `parameters.txt` must be present in the working directory). Each folder starts with `sim_` and will be named after its parameter values. For example, the folder for simulation 1 above will have the name `sim_param1_1_param2_1_param3_1_1_1`.
+
+Also note that in case a mistake was made, this program will not overwrite existing directories, so it is best to remove simulation folders before re-running it:
+
+```
+rm -r sim*
+```
 
 ## Preparation
 
