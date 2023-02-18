@@ -75,9 +75,17 @@ bash dispatch_files.sh <file1> <file2> ...
 
 That will copy the files into **every** subdirectory.
 
-## Notes
+### 5. In case of a mistake
 
-* Some parameters may take multiple values, separated by spaces. For example, if the initial number of individuals in each deme shows as
+The scripts will not overwrite existing directories, so in case of a mistake, best delete simulation folders before re-running the scripts, e.g. by doing
+
+```sh
+rm -r sim*
+```
+
+## Note
+
+Some parameters may take multiple values, separated by spaces. For example, if the initial number of individuals in each deme shows as
 
 ```
 demesizes 100 10 10 10 10
@@ -99,27 +107,6 @@ sim-demesizes-100-20-20-20-20
 sim-demesizes-100-0-0-0-0
 ```
 
-* The scripts will not overwrite existing directories, so in case of a mistake, best delete simulation folders before re-running the scripts, e.g. by doing
-
-```sh
-rm -r sim*
-```
-
 ## Disclaimer
 
 These scripts do not create combinations of parameters, they only read the combinations you want to run and set up the simulation folders for you. You must create the combinations beforehand. This is because while some use-cases may require exploring all combinations of a given set of parameter values, other use-cases may require running only subsets of all possible combinations, or some very specific combinations, for which a combination-generating program may not be adequate. For that reason I prefer to keep the generation of parameter combinations and the set-up of simulation arrays separate (this repository is only about the latter).
-
-## Content
-
-This repository contains:
-
-* `prepare_sims.sh`: the main script, which calls the other scripts below
-* `make_folder_names.py`: a routine to turn parameter values into a list of folder names
-* `update_value.py`: a routine to change the value of a given parameter in a parameter file
-* `param1.txt`, `param2.txt`, `param3.txt`: example lists of parameter values for each parameter of interest
-* `parameters.txt`: the template parameter file for the simulation program
-* `dispatch_files.sh`: additional script to copy files into all subdirectories
-
-## About
-
-This program was tested on Ubuntu 20.04 LTS (but might work on other platforms) and relies on Python 3 being installed (tested with version 3.8.10).
