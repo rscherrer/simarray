@@ -68,7 +68,8 @@ with ExitStack() as stack:
         # Strip whitespace and assemble base folder name
         values = [line.strip() for line in lines]
         base_folder_name = f"{args.sim_prefix}{args.separator}" + f"{args.separator}".join(
-            f"{param}{args.separator}{value}" for param, value in zip(parameter_names, values)
+            f"{param}{args.separator}{args.separator.join(value.split(args.param_separator))}" 
+            for param, value in zip(parameter_names, values)
         )
         
         # Create replicate folders
@@ -126,7 +127,10 @@ with ExitStack() as stack:
                     modified_lines.append(f"{param}{args.param_separator}{param_values[param]}\n")
         else:
             # If no template is provided, create a new parameter file
-            modified_lines = [f"{param}{args.param_separator}{value}\n" for param, value in param_values.items()]
+            modified_lines = [
+                f"{param}{args.param_separator}{value}\n"
+                for param, value in param_values.items()
+            ]
 
         # Write the parameter file to the target folder
         with open(os.path.join(target_path, param_file_name), 'w') as output_file:

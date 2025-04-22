@@ -1,6 +1,6 @@
 # SimArray: Simulation Folder Generator
 
-`simarray` is a [Python](https://www.python.org/) script designed to automate the creation of simulation folders based on parameter combinations provided in input files. 
+`simarray.py` is a [Python](https://www.python.org/) script designed to automate the creation of simulation folders based on parameter combinations provided in input files. 
 
 ## Description
 
@@ -140,6 +140,40 @@ The output simulation folders will have names starting with `sim` by default, bu
 ```
 
 This indicates that there is already a template parameter file, called `parameters.txt` (e.g. containing non-default parameters that must remain constant), and that we should not create a new parameter file for each simulation folder. The above command modifies `parameters.txt` for each simulation folder based on the input files. (The template file must exist.)
+
+By default, the script expects parameter names and values to be separated by white spaces, and will write them also separated by white spaces in the output parameter files. To change that, use `--param-separator` (this will not change how names and values are separated in folder names, as this is `--separator`'s job).
+
+### Vector Parameters
+
+The script can handle parameters that come as multiple values, e.g.
+
+```
+traits 0 0 1
+```
+
+Then, the parameter combination file `traits.txt` should look like:
+
+```
+0 0 0
+0 0 1
+0 0 2
+```
+
+Now, running:
+
+```shell
+./simarray.py mutation.txt traits.txt
+```
+
+will produce the following folders:
+
+```
+./sim_mutation_0.001_traits_0_0_0/
+./sim_mutation_0.01_traits_0_0_1/
+./sim_mutation_0.1_traits_0_0_2/
+```
+
+The script expects the different values on a given line in `traits.txt` to be separated by `--param-separator`, and will separate them with that separator too in output parameter files. However, it will use `--separator` to separate the values in folder names (mostly to avoid spaces). 
 
 ### Read from Folder
 
