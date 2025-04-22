@@ -6,8 +6,13 @@ import os
 import shutil
 import tarfile
 
+# Define the version of the script
+SCRIPT_VERSION = "1.0.0"
+
 # Set up argument parser
-parser = argparse.ArgumentParser(description="Process multiple files.")
+parser = argparse.ArgumentParser(
+    description="SimArray: A script to generate simulation folders, dispatch files, and compress folders."
+)
 parser.add_argument('filenames', nargs='*', help="List of filenames to process")
 parser.add_argument('--folder', help="Path to a folder containing files to process")
 parser.add_argument('--separator', default='_', help="Separator to use in folder names (default: '_')")
@@ -24,10 +29,77 @@ parser.add_argument('--dispatch', nargs='*', help="List of files to copy into ea
 parser.add_argument('--compress', action='store_true', help="Compress each batch into a tarball (or compress everything if no batches are specified)")
 parser.add_argument('--tarball-name', default='all_simulations', help="Name of the global tarball (default: 'all_simulations')")
 parser.add_argument('--verbose', type=int, choices=[0, 1, 2], default=1, help="Verbosity level: 0 (silent), 1 (default), 2 (detailed)")
+parser.add_argument('--dispatch-only', action='store_true', help="Only dispatch files into existing folders (skip folder generation)")
+parser.add_argument('--compress-only', action='store_true', help="Only compress existing folders (skip folder generation)")
+parser.add_argument('--version', action='version', version=f"%(prog)s {SCRIPT_VERSION}", help="Show program's version number and exit")
 
 # Parse the arguments
 args = parser.parse_args()
 
+# Dispatch-only mode
+if args.dispatch_only:
+    if not args.dispatch:
+        raise ValueError("No files specified for dispatch. Use the --dispatch argument to specify files.")
+    if not args.target:
+        raise ValueError("No target folder specified. Use the --target argument to specify the folder containing existing simulation folders.")
+
+    # Get the list of existing folders in the target directory
+    existing_folders = [
+        os.path.join(args.target, f) for f in os.listdir(args.target) if os.path.isdir(os.path.join(args.target, f))
+    ]
+
+    if args.verbose >= 1:
+        print(f"Dispatching files into {len(existing_folders)} existing folders in target '{args.target}'...")
+
+    # Dispatch files into each folder
+    for folder in existing_folders:
+        if args.verbose == 2:
+            print(f"Dispatching files into folder: {folder}")
+        for file_to_copy in args.dispatch:
+            if os.path.isfile(file_to_copy):
+                shutil.copy(file_to_copy, folder)
+            else:
+                raise ValueError(f"File '{file_to_copy}' specified in --dispatch does not exist or is not a file.")
+
+    if args.verbose >= 1:
+        print("File dispatch completed.")
+    exit(0)
+
+# Compress-only mode
+if args.compress_only:
+    if not args.target:
+        raise ValueError("No target folder specified. Use the --target argument to specify the folder containing existing simulation folders.")
+
+    # Get the list of batch folders or all folders
+    batch_folders = [
+        os.path.join(args.target, f) for f in os.listdir(args.target)
+        if os.path.isdir(os.path.join(args.target, f)) and f.startswith(args.batch_prefix)
+    ]
+    if batch_folders:
+        if args.verbose >= 1:
+            print(f"Found {len(batch_folders)} batch folders for compression.")
+        # Compress each batch folder
+        for batch_folder in batch_folders:
+            tarball_name = f"{batch_folder}.tar.gz"
+            with tarfile.open(tarball_name, "w:gz") as tar:
+                tar.add(batch_folder, arcname=os.path.basename(batch_folder))
+            if args.verbose >= 1:
+                print(f"Compressed batch folder '{batch_folder}' into '{tarball_name}'")
+    else:
+        # Compress all folders into a single tarball
+        all_folders = [
+            os.path.join(args.target, f) for f in os.listdir(args.target) if os.path.isdir(os.path.join(args.target, f))
+        ]
+        if args.verbose >= 1:
+            print(f"Found {len(all_folders)} folders for compression.")
+        tarball_name = os.path.join(args.target, f"{args.tarball_name}.tar.gz")
+        with tarfile.open(tarball_name, "w:gz") as tar:
+            for folder in all_folders:
+                tar.add(folder, arcname=os.path.basename(folder))
+        if args.verbose >= 1:
+            print(f"Compressed all folders into '{tarball_name}'")
+    exit(0)
+    
 # Determine the name of the parameter file in the final folder
 if args.output_param_file:
     param_file_name = args.output_param_file

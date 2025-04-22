@@ -70,12 +70,9 @@ or
 
 For the latter, to run the script directly, make sure to first run `chmod +x <the-script.py>` to make it executable.
 
-### Main Arguments:
+### Arguments
 
 * `filenames`: List of input files containing parameter values (e.g., `mutation.txt`, `selection.txt`).
-
-### Optional Arguments:
-
 * `--folder`: Path to a folder containing files to process.
 * `--separator`: Separator to use in output folder names (default: `_`).
 * `--target`: Target folder to save results (default: current directory).
@@ -94,6 +91,12 @@ For the latter, to run the script directly, make sure to first run `chmod +x <th
     * `0`: Silent.
     * `1`: Default (high-level messages).
     * `2`: Detailed (prints folder and tarball names).
+* `--compress-only`: Compress existing folders into tarballs.
+* `--dispatch-only`: Dispatch files into existing folders.
+* `--help`: Show this help message and exit.
+* `--version`: Show program's version number and exit.
+
+(See example use cases below.)
 
 ## Output
 
@@ -240,6 +243,16 @@ where:
 
 For non-Unix Windows interface, third-party tools like [7-Zip](https://www.7-zip.org/) or [WinRAR](https://www.win-rar.com/) can be used.
 
+### Compression Only
+
+To simply compress per batch (or all folders in one archive) after the folders have already been created, use:
+
+```shell
+./simarray.py --target sims/ --compress-only
+```
+
+This will compress batches as detected using the `--batch-prefix` argument (or its default if not provided). If no batches are found, all the files in the `--target` directory will be compressed in a single tarball. As previously expained, the name of that tarball can be changed with `--tarball-name`.
+
 ### Dispatching Extra Files
 
 ```shell
@@ -247,6 +260,14 @@ For non-Unix Windows interface, third-party tools like [7-Zip](https://www.7-zip
 ```
 
 Copies `file1.txt` and `file2.txt` into each simulation folder, unchanged. Handy if a run requires more files that must remain constant across simulations.
+
+### Dispatch Only
+
+To use the program to only dispatch files (e.g. assuming that the folders have already been generated and some files have been forgotten) into the target folders, use:
+
+```shell
+./simarray.py --target sims/ --dispatch file1.txt file2.txt --dispatch-only
+```
 
 ## Requirements
 
