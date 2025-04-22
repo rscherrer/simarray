@@ -230,7 +230,7 @@ This script uses the following Python built-in standard libraries:
 
 ## About
 
-This code was written in Python, on Ubuntu Linux 24.04 LTS, using [Visual Studio Code](https://code.visualstudio.com/) 1.99.0 ([Python Extension Pack](https://marketplace.visualstudio.com/items/?itemName=donjayamanne.python-extension-pack) 1.7.0). The script was run using [Python]((https://www.python.org/)) 3.12.3.
+This code was written in Python, on Ubuntu Linux 24.04 LTS, using [Visual Studio Code](https://code.visualstudio.com/) 1.99.0 ([Python Extension Pack](https://marketplace.visualstudio.com/items/?itemName=donjayamanne.python-extension-pack) 1.7.0). The script was run using [Python](https://www.python.org/) 3.12.3.
 
 ## Disclaimer
 
