@@ -1,5 +1,8 @@
 # Simulation folders
 sim_*/
+sims/
+pars/
+parameters.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
