@@ -239,6 +239,3 @@ This code comes with no guarantee whatsoever.
 ## License
 
 This script is licensed under the [MIT license](LICENSE.md).
-
-
-
