@@ -1,6 +1,9 @@
 # SimArray: Simulation Folder Generator
 
-`simarray.py` is a [Python](https://www.python.org/) script designed to automate the creation of simulation folders based on parameter combinations provided in input files. 
+`simarray.py` is a [Python](https://www.python.org/) script designed to automate the creation of simulation folders based on parameter combinations provided in input files.
+
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
 ## Description
 
@@ -24,7 +27,7 @@ selection 0
 mutation 0.00001
 ```
 
-Then, **running many simulations, across many combinations of parameters**, each with a slight difference in parameters can be challenging. This program makes it easier to do just that, by generating all the necessary simulation folders, with the right, updated parameter files with the right values into them.
+Then, **running many simulations, across many combinations of parameters**, each with a slight difference in parameters can be challenging. SimArray makes it easier to do just that, by generating all the necessary simulation folders, with the right, updated parameter files with the right values into them.
 
 ## Input
 
@@ -54,7 +57,9 @@ The script `simarray.py` would then convert the provided combinations of the two
 ./sim_mutation_0.1_selection_1.6/
 ```
 
-Note that this script does not generate the parameter combination files - they **must be provided**. To generate all possible combinations of some parameters, you can use for example the `expand_grid()` function in [R](https://www.r-project.org/). However, there may be more complex cases of parameter space exploration that are user-specific, and so we chose not to delve into that in the development of this program.
+### Note
+
+Note that this script does not generate the parameter combination files - they **must be provided**. To generate all possible combinations of some parameters, you can use for example the `expand_grid()` function in [R](https://www.r-project.org/). However, there may be more complex cases of parameter space exploration that are user-specific, and so I chose not to delve into that in the development of this program.
 
 ## Usage
 
@@ -68,39 +73,47 @@ or
 ./simarray.py [options] filenames
 ```
 
-For the latter, to run the script directly, make sure to first run `chmod +x <the-script.py>` to make it executable.
+For the latter, to run the script directly, make sure to first run `chmod +x simarray.py` to make it executable.
 
 ### Arguments
 
 * `filenames`: List of input files containing parameter values (e.g., `mutation.txt`, `selection.txt`).
-* `--folder`: Path to a folder containing files to process.
+* `--folder`: Path to a folder containing files to process (all files in that folder will be read as input if `filenames` is not provided).
 * `--separator`: Separator to use in output folder names (default: `_`).
-* `--target`: Target folder to save results (default: current directory).
+* `--target`: Target folder to save results into (default: current directory).
 * `--by`: Number of folders per batch (no batching if not provided).
 * `--batch-prefix`: Prefix for batch folder names (default: `batch_`).
 * `--sim-prefix`: Prefix for simulation folder names (default: `sim` followed by what was provided in `--separator`).
 * `--replicates`: Number of replicates per parameter combination (default: 1).
 * `--replicate-prefix`: Prefix for replicate identifiers (default: `r`).
 * `--template`: Path to the template parameter file (if not given, a new parameter file will be created for each simulation folder).
-* `--output-param-file`: Name of the parameter file in the output folders (default: same as `--template` or `parameters.txt`).
-* `--param-separator`: Separator between parameter name and value as expected in the template file (default: white space).
-* `--dispatch`: List of files to copy into each simulation folder.
-* `--compress`: Compress each batch into a tarball (or compress everything if no batches are specified).
+* `--output-param-file`: Name of the parameter file in the output folders (default: same as `--template` or `parameters.txt` if `--template` is not provided).
+* `--param-separator`: Separator between parameter name and value expected in the template file (default: white space).
+* `--dispatch`: List of extra files to copy into each simulation folder.
+* `--compress`: Compress each batch into a tarball (or compress everything if `--by` was not specified).
 * `--tarball-name`: Name of the global tarball if compression without batching (default: `all_simulations`).
 * `--verbose`: Verbosity level:
     * `0`: Silent.
     * `1`: Default (high-level messages).
     * `2`: Detailed (prints folder and tarball names).
-* `--compress-only`: Compress existing folders into tarballs.
+* `--compress-only`: Compress existing batch folders into tarballs (identifies them in `--target` as folders starting with `--batch-prefix`).
+* `--compress-all`: Compress all simulation folders in `--target` into a single tarball (looks for `--sim-prefix` instead).
 * `--dispatch-only`: Dispatch files into existing folders.
-* `--help`: Show this help message and exit.
+* `--dispatch-recursive`: When in `--dispatch-only` mode, recursively search for folders with `--sim-prefix` inside of batch folders with `--batch-prefix` within `--target`, or just directly within `--target`.
+* `--help`: Show help message and exit.
 * `--version`: Show program's version number and exit.
 
-(See example use cases below.)
+(See examples below.)
 
 ## Output
 
-For an exampe with input files `mutation.txt`, `selection.txt`, and `recombination.txt`, we would get something like this:
+For an example with input files `mutation.txt`, `selection.txt`, and `recombination.txt`, and running
+
+```shell
+./simarray.py mutation.txt selection.txt recombination.txt --by 3 --replicates 2 --target target/
+```
+
+ we would get something like this:
 
 ```
 target/
@@ -132,7 +145,7 @@ mutation 0.001
 ./simarray.py mutation.txt selection.txt recombination.txt
 ```
 
-Creates simulation folders based on the parameter combinations in the input files. The input files should be named after their respective parameter **as expected in the parameter file**, and **must have the same number of rows**, as they each list the values of one parameter across as many combinations. By default, the above command will create a file named `parameters.txt` and place it into each simulation folder (use the `--output-param-file` argument to change that). 
+Creates simulation folders based on the parameter combinations in the input files. The input files should be named after their respective parameter **as expected in the parameter file** (this is defined by the simulation program you use), and **must have the same number of rows**, as they each list the values of one parameter across as many combinations. By default, the above command will create a file named `parameters.txt` and place it into each simulation folder (use the `--output-param-file` argument to change the name of that file). 
 
 The output simulation folders will have names starting with `sim` by default, but that can be changed in `--sim-prefix`. The separator between names and values in the folder names is `_` by default, but that can also be changed, using `--separator`.
 
@@ -176,7 +189,7 @@ will produce the following folders:
 ./sim_mutation_0.1_traits_0_0_2/
 ```
 
-The script expects the different values on a given line in `traits.txt` to be separated by `--param-separator`, and will separate them with that separator too in output parameter files. However, it will use `--separator` to separate the values in folder names (mostly to avoid spaces). 
+The script expects the different values on a given line in `traits.txt` to be separated by `--param-separator`, and will separate them with that separator too in output parameter files. However, it will use `--separator` to separate the values in folder names (mostly to avoid white spaces in paths). 
 
 ### Read from Folder
 
@@ -184,7 +197,13 @@ The script expects the different values on a given line in `traits.txt` to be se
 ./simarray.py --folder pars/
 ```
 
-This will take all files in the `pars/` directory as input files (instead of having to write `mutation.txt`, `selection.txt`, etc.). Can be handy if there are many parameters to create combniations for. (To reduce cluttering we use this notation in the next examples.)
+This will take all files in the `pars/` directory as input files (instead of having to write `mutation.txt`, `selection.txt`, etc.). Can be handy if there are many parameters to create combinations for. (To reduce cluttering we use this notation in the next examples.)
+
+To only read certain files in `--folder`, just provide their names beforehand:
+
+```shell
+./simarray.py  mutation.txt selection.txt --folder pars/
+```
 
 ### Custom Target
 
@@ -202,7 +221,7 @@ will locate them in a new target directory called `sims/`.
 ./simarray.py --folder pars/ --replicates 3
 ```
 
-Creates 3 replicate folders for each parameter combination, appending `r1`, `r2` and `r3` at the end of the names of each one. To change the replicate identifier, use the `--replicate-prefix` argument.
+Creates 3 replicate folders for each parameter combination, appending the replicate identifier `r1`, `r2` and `r3` at the end of the names of each one. To change the replicate identifier, use the `--replicate-prefix` argument.
 
 ### Batching
 
@@ -245,13 +264,21 @@ For non-Unix Windows interface, third-party tools like [7-Zip](https://www.7-zip
 
 ### Compression Only
 
-To simply compress per batch (or all folders in one archive) after the folders have already been created, use:
+To simply compress per batch (or all folders in one archive) after the folders have already been created (e.g. in a previous run of `simarray.py`), use:
 
 ```shell
 ./simarray.py --target sims/ --compress-only
 ```
 
-This will compress batches as detected using the `--batch-prefix` argument (or its default if not provided). If no batches are found, all the files in the `--target` directory will be compressed in a single tarball. As previously expained, the name of that tarball can be changed with `--tarball-name`.
+This will compress batches as detected using the `--batch-prefix` argument (or its default if not provided).
+
+Use the `--compress-all` flag,
+
+```shell
+./simarray.py --target sims/ --compress-only --compress-all
+```
+
+to skip looking into batch folders and compress all simulation folders (identified with `--sim-prefix` or its default) inside of `--target` into one single tarball named `all_simulations.tar.gz` (or whatever name you provide with `--tarball-name`).
 
 ### Dispatching Extra Files
 
@@ -263,17 +290,25 @@ Copies `file1.txt` and `file2.txt` into each simulation folder, unchanged. Handy
 
 ### Dispatch Only
 
-To use the program to only dispatch files (e.g. assuming that the folders have already been generated and some files have been forgotten) into the target folders, use:
+To use the program to only dispatch files (e.g. assuming that the folders have already been generated in a previous run of `simarray.py` and some files have been forgotten) into the target folders, use:
 
 ```shell
 ./simarray.py --target sims/ --dispatch file1.txt file2.txt --dispatch-only
 ```
 
+This will look for folers starting with `--sim-prefix` in the `--target` directory. If simulation folders are arranged in batches, add the `--dispatch-recursive` flag:
+
+```shell
+./simarray.py --target sims/ --dispatch file1.txt file2.txt --dispatch-only --dispatch-recursive
+```
+
+This will look for folders starting with `--sim-prefix` inside of batch folders starting with `--batch-prefix` within `--target`.
+
 ## Requirements
 
 * [Python](https://www.python.org/) 3.6 or higher
 
-## Dependencies
+### Dependencies
 
 This script uses the following Python built-in standard libraries:
 
@@ -282,15 +317,33 @@ This script uses the following Python built-in standard libraries:
 * [os](https://docs.python.org/3/library/os.html)
 * [shutil](https://docs.python.org/3/library/shutil.html)
 * [tarfile](https://docs.python.org/3/library/tarfile.html)
+* [warnings](https://docs.python.org/3/library/warnings.html)
+
+## Tests
+
+Tests for this code can be found in the `tests/` folder. The tests make use of the following standard Python libraries:
+
+* [unittest](https://docs.python.org/3/library/unittest.html)
+* [unittest.mock](https://docs.python.org/3/library/unittest.mock.html)
+* [os](https://docs.python.org/3/library/os.html)
+* [shutil](https://docs.python.org/3/library/shutil.html)
+* [warnings](https://docs.python.org/3/library/warnings.html)
+* [sys](https://docs.python.org/3/library/sys.html)
+* [subprocess](https://docs.python.org/3/library/subprocess.html)
+* [tarfile](https://docs.python.org/3/library/tarfile.html)
 
 ## About
 
-This code was written in Python, on Ubuntu Linux 24.04 LTS, using [Visual Studio Code](https://code.visualstudio.com/) 1.99.0 ([Python Extension Pack](https://marketplace.visualstudio.com/items/?itemName=donjayamanne.python-extension-pack) 1.7.0). The script was run using [Python](https://www.python.org/) 3.12.3. Occasional use was made of [ChatGPT](https://chatgpt.com/) and [GitHub Copilot](https://github.com/features/copilot) in the development of this code.
+This code was written in Python, on Ubuntu Linux 24.04 LTS, using [Visual Studio Code](https://code.visualstudio.com/) 1.99.0 ([Python Extension Pack](https://marketplace.visualstudio.com/items/?itemName=donjayamanne.python-extension-pack) 1.7.0). The script was run using [Python](https://www.python.org/) 3.12.3. Tests were run using the standard [unittest](https://docs.python.org/3/library/unittest.html) module, and code coverage was measured using the [coverage](https://coverage.readthedocs.io/en/7.4.4) 7.4.4 module. (See the `dev/` folder and [this page](dev/README.md) for details about the checks performed.)
+
+Occasional use was made of [ChatGPT](https://chatgpt.com/) and [GitHub Copilot](https://github.com/features/copilot) in the development of this code.
 
 ## Disclaimer
 
 This code comes with no guarantee whatsoever.
 
-## License
+## Copyright
 
-This script is licensed under the [MIT license](LICENSE.md).
+Copyright (c) 2025 [Raphaël Scherrer](https://github.com/rscherrer)
+
+This code is licensed under the [MIT license](LICENSE.md).
