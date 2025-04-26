@@ -4,6 +4,9 @@
 
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![PEP 8](https://img.shields.io/badge/PEP_8-100%-brightgreen)
+![Python](https://img.shields.io/badge/python-3.6%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Description
 
@@ -334,7 +337,8 @@ Tests for this code can be found in the `tests/` folder. The tests make use of t
 
 ## About
 
-This code was written in Python, on Ubuntu Linux 24.04 LTS, using [Visual Studio Code](https://code.visualstudio.com/) 1.99.0 ([Python Extension Pack](https://marketplace.visualstudio.com/items/?itemName=donjayamanne.python-extension-pack) 1.7.0). The script was run using [Python](https://www.python.org/) 3.12.3. Tests were run using the standard [unittest](https://docs.python.org/3/library/unittest.html) module, and code coverage was measured using the [coverage](https://coverage.readthedocs.io/en/7.4.4) 7.4.4 module. (See the `dev/` folder and [this page](dev/README.md) for details about the checks performed.)
+This code was written in Python, on Ubuntu Linux 24.04 LTS, using [Visual Studio Code](https://code.visualstudio.com/) 1.99.0 ([Python Extension Pack](https://marketplace.visualstudio.com/items/?itemName=donjayamanne.python-extension-pack) 1.7.0). The script was run using [Python](https://www.python.org/) 3.12.3. Tests were run using the standard [unittest](https://docs.python.org/3/library/unittest.html) module. Code coverage was measured using the [coverage](https://coverage.readthedocs.io/en/7.4.4) 7.4.4 module. Style and syntax were checked against the [PEP 8](https://peps.python.org/pep-0008/) guidelines using [pylint](https://pypi.org/project/pylint/) 3.3.6.
+Installation of non-standard modules was done using [pip](https://pypi.org/project/pip/) 24.0 in a virtual environment managed by [venv](https://docs.python.org/3/library/venv.html) 3.12.3. (See the `dev/` folder and [this page](dev/README.md) for details about the checks performed.)
 
 Occasional use was made of [ChatGPT](https://chatgpt.com/) and [GitHub Copilot](https://github.com/features/copilot) in the development of this code.
 
