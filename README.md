@@ -4,7 +4,7 @@
 
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
-![PEP 8](https://img.shields.io/badge/PEP_8-100%-brightgreen)
+![PEP 8](https://img.shields.io/badge/PEP_8-100%25-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.6%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
