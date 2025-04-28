@@ -46,10 +46,13 @@ import warnings
 import sys
 
 # Define the version of the script
-SCRIPT_VERSION = "1.3.1"
+SCRIPT_VERSION = "1.3.3"
 
+# Function to parse command-line arguments
 def parse_arguments():
+
     """Parse and return command-line arguments."""
+
     parser = argparse.ArgumentParser(
         description=(
             "SimArray: A script to generate simulation folders, dispatch "
@@ -151,21 +154,27 @@ def parse_arguments():
     )
     return parser.parse_args()
 
+# Function to dispatch files into the specified folders
 def dispatch_files(args, target_folders):
+
     """
     Dispatch files into the specified folders.
     """
 
+    # Verbose if needed
     if args.verbose >= 1:
         print(
             f"Dispatching files into {len(target_folders)} folders in target '{args.target}'..."
         )
 
+    # For each target folder...
     for folder in target_folders:
 
+        # Verbose if needed
         if args.verbose == 2:
             print(f"Dispatching files into folder: {folder}")
 
+        # Copy the files into the folder
         for file_to_copy in args.dispatch:
             if os.path.isfile(file_to_copy):
                 shutil.copy(file_to_copy, folder)
@@ -175,14 +184,18 @@ def dispatch_files(args, target_folders):
                     f"not exist or is not a file."
                 )
 
+    # Verbose if needed
     if args.verbose >= 1:
         print("File dispatch completed.")
 
+# Function to handle the dispatch-only mode
 def dispatch_only_mode(args):
+
     """
     Handle the dispatch-only mode: dispatch files into existing simulation folders,
     optionally searching recursively within batch folders.
     """
+
     # Ensure files to dispatch are provided
     if not args.dispatch:
         raise ValueError(
@@ -193,8 +206,9 @@ def dispatch_only_mode(args):
     # Determine the target directory
     target_dir = args.target if args.target else os.getcwd()
 
-    # Get the list of simulation folders
+    # If recursive...
     if args.dispatch_recursive:
+
         # Look for batch folders within the target directory
         batch_folders = [
             os.path.join(target_dir, f)
@@ -212,7 +226,9 @@ def dispatch_only_mode(args):
                 if os.path.isdir(os.path.join(batch_folder, f))
                 and f.startswith(args.sim_prefix)
             ])
+
     else:
+
         # Look for simulation folders directly in the target directory
         existing_folders = [
             os.path.join(target_dir, f)
@@ -227,21 +243,26 @@ def dispatch_only_mode(args):
             f"No simulation folders found in '{target_dir}' starting with "
             f"prefix '{args.sim_prefix}'."
         )
-        return 0  # Exit early since there are no folders to dispatch files into
+        return 0
 
+    # Dispatch files into the found simulation folders
     dispatch_files(args, existing_folders)
-
     return 0
 
+# Function to handle the compress-only mode
 def compress_only_mode(args):
+
     """
     Handle the compress-only mode: compress simulation folders or batch folders
     based on the provided arguments.
     """
+
     # Determine the target directory
     target_dir = args.target if args.target else os.getcwd()
 
+    # If compressing all simulation folders...
     if args.compress_all:
+
         # Look for simulation folders in the target directory
         simulation_folders = [
             os.path.join(target_dir, f)
@@ -250,12 +271,16 @@ def compress_only_mode(args):
             and f.startswith(args.sim_prefix)
         ]
 
+        # If simulation folders are found...
         if simulation_folders:
+
+            # Verbose if needed
             if args.verbose >= 1:
                 print(
                     f"Found {len(simulation_folders)} simulation folders "
                     "for compression."
                 )
+
             # Compress all simulation folders into one tarball
             tarball_name = os.path.join(
                 target_dir, f"{args.tarball_name}.tar.gz"
@@ -267,13 +292,17 @@ def compress_only_mode(args):
                 print(
                     f"Compressed all simulation folders into '{tarball_name}'"
                 )
+
         else:
+
             # Issue a warning if no simulation folders are found
             warnings.warn(
                 f"No simulation folders found in '{target_dir}' starting "
                 f"with prefix '{args.sim_prefix}'."
             )
+
     else:
+
         # Look for batch folders in the target directory
         batch_folders = [
             os.path.join(target_dir, f)
@@ -282,12 +311,16 @@ def compress_only_mode(args):
             and f.startswith(args.batch_prefix)
         ]
 
+        # If batch folders are found...
         if batch_folders:
+
+            # Verbose if needed
             if args.verbose >= 1:
                 print(
                     f"Found {len(batch_folders)} batch folders for "
                     "compression."
                 )
+
             # Compress each batch folder into its own tarball
             for batch_folder in batch_folders:
                 tarball_name = f"{batch_folder}.tar.gz"
@@ -300,34 +333,48 @@ def compress_only_mode(args):
                         f"Compressed batch folder '{batch_folder}' into "
                         f"'{tarball_name}'"
                     )
+
         else:
+
             # Issue a warning if no batch folders are found
             warnings.warn(
                 f"No batch folders found in '{target_dir}' starting with "
                 f"prefix '{args.batch_prefix}'."
             )
 
+# Function to determine the name of the output parameter file
 def get_output_param_file_name(args):
+
     """
     Determine the name of the output parameter file based on the provided arguments.
     """
+
+    # If an output parameter file is specified, use that
     if args.output_param_file:
         return args.output_param_file
 
+    # If a template is provided, use its name
     if args.template:
         return os.path.basename(args.template)
 
+    # If no template is provided, use a default name
     return "parameters.txt"
 
+# Function to get the filenames from the specified folder
 def get_filenames_from_folder(args):
+
     """
     Get filenames from the specified folder and update the args.filenames list.
     """
 
-    # If filenames are provided, prepend the folder path to each filename
+    # If filenames are provided...
     if args.filenames:
+
+        # Prepend the folder path to each filename
         args.filenames = [os.path.join(args.folder, f) for f in args.filenames]
+
     else:
+
         # If no filenames are provided, take all files in the folder as input
         args.filenames.extend(
             [
@@ -336,34 +383,48 @@ def get_filenames_from_folder(args):
             ]
         )
 
+# Function to check if files are provided
 def check_files_provided(filenames):
+
     """
     Ensure that files are provided. Raise an error if no files are found.
     """
+
+    # Error if not
     if not filenames:
         raise ValueError("No files provided. Use filenames or the --folder option.")
 
+# Function to check if all files have the same number of lines
 def check_line_counts(filenames):
+
     """
     Check if all files have the same number of lines.
     """
+
+    # Count lines
     line_counts = []
     for filename in filenames:
         with open(filename, 'r', encoding='utf-8') as f:
             line_counts.append(sum(1 for _ in f))
 
+    # Error if not
     if len(set(line_counts)) > 1:
         raise ValueError("Files do not have the same number of lines.")
 
+# Function to generate all folder names based on parameters
 def get_all_folder_names(args, parameter_names, parameter_values):
+
     """
     Generate all folder names based on the provided arguments, parameter names,
     and parameter values.
     """
+
+    # Prepare
     all_folders = []
 
     # For each combination of parameter values (one line per file)
     for values in zip(*parameter_values):
+
         # Strip whitespace and assemble base folder name
         values = [value.strip() for value in values]
         base_folder_name = (
@@ -381,26 +442,37 @@ def get_all_folder_names(args, parameter_names, parameter_values):
             )
             all_folders.append((folder_name, dict(zip(parameter_names, values))))
 
+    # Exit
     return all_folders
 
+# Function to get the target path for a folder
 def get_target_path(args, folder_name, batch_number=None):
+
     """
     Determine the target path for a folder, considering batching if enabled.
     """
+
+    # If batching...
     if args.by and batch_number:
-        # If batching is enabled, include the batch folder in the path
+
+        # Include the batch folder in the path
         batch_folder = os.path.join(args.target, f"{args.batch_prefix}{batch_number}")
         return os.path.join(batch_folder, folder_name)
 
     # If batching is not enabled, use the target directory directly
     return os.path.join(args.target, folder_name)
 
+# Function to generate the lines for the output parameter file
 def generate_param_file_lines(args, parameter_names, param_values):
+
     """
     Generate the lines for the output parameter file.
     """
-    # If a template is provided, read and modify it
+
+    # If a template is provided
     if args.template:
+
+        # Read the template file
         with open(args.template, 'r', encoding='utf-8') as template_file:
             template_lines = template_file.readlines()
 
@@ -431,7 +503,7 @@ def generate_param_file_lines(args, parameter_names, param_values):
             ):
                 param_name = line_stripped.split(args.param_separator, 1)[0]
                 modified_lines.append(
-                f"{param_name}{args.param_separator}{param_values[param_name]}\n"
+                    f"{param_name}{args.param_separator}{param_values[param_name]}\n"
                 )
                 found_parameters.add(param_name)
             else:
@@ -441,21 +513,26 @@ def generate_param_file_lines(args, parameter_names, param_values):
         for param in parameter_names:
             if param not in found_parameters:
                 modified_lines.append(
-                f"{param}{args.param_separator}{param_values[param]}\n"
+                    f"{param}{args.param_separator}{param_values[param]}\n"
                 )
+
     else:
+
         # If no template is provided, create a new parameter file
         modified_lines = [
             f"{param}{args.param_separator}{value}\n"
             for param, value in param_values.items()
         ]
 
+    # Exit
     return modified_lines
 
+# Function to write the parameter file
 def write_param_file(
     args, target_path, parameter_names, param_values,
     param_file_name
 ):
+
     """
     Write the output parameter file to the target folder.
     """
@@ -464,6 +541,7 @@ def write_param_file(
     if args.verbose == 2:
         print(f"Created folder: {target_path}")
 
+    # Generate the lines for the parameter file
     modified_lines = generate_param_file_lines(
         args, parameter_names, param_values
     )
@@ -474,14 +552,20 @@ def write_param_file(
     ) as output_file:
         output_file.writelines(modified_lines)
 
+# Function to handle the final compression step
 def final_compression(args, batch_number=None):
+
     """
     Handle the final compression step: compress all simulations or batch folders.
     """
+
+    # Verbose if needed
     if args.verbose >= 1:
         print("Compressing folders...")
 
+    # If batching...
     if args.by and batch_number:
+
         # Compress each batch folder
         for batch_num in range(1, batch_number + 1):
             batch_folder = os.path.join(args.target, f"{args.batch_prefix}{batch_num}")
@@ -490,7 +574,9 @@ def final_compression(args, batch_number=None):
                 tar.add(batch_folder, arcname=os.path.basename(batch_folder))
             if args.verbose >= 1:
                 print(f"Compressed batch folder '{batch_folder}' into '{tarball_name}'")
+
     else:
+
         # Compress everything into a single tarball
         tarball_name = os.path.join(args.target, f"{args.tarball_name}.tar.gz")
         with tarfile.open(tarball_name, "w:gz") as tar:
@@ -498,7 +584,9 @@ def final_compression(args, batch_number=None):
         if args.verbose >= 1:
             print(f"Compressed all simulations into '{tarball_name}'")
 
+# Main function to run the script
 def main():
+
     """
     This function runs the main logic of the script. It processes command line arguments,
     generates simulation folders, dispatches files, and compresses folders as needed.
@@ -532,20 +620,31 @@ def main():
 
     # Open and process files
     with ExitStack() as stack:
+
+        # Open all files
         files = [
             stack.enter_context(open(filename, 'r', encoding='utf-8'))
             for filename in args.filenames
         ]
+
+        # Read the lines
         parameter_names = [
             os.path.splitext(os.path.basename(filename))[0]
             for filename in args.filenames
         ]
 
+        # Prepare folder names
         all_folders = get_all_folder_names(args, parameter_names, files)
 
-        # Split folders into batches if batching is enabled
-        batch_number = 1
+        # Prepare to count batches
+        batch_number = 0
+
+        # For each folder...
         for i, (folder_name, param_values) in enumerate(all_folders):
+
+            # Increment batch logic
+            if args.by and i % args.by == 0:
+                batch_number += 1
 
             # Determine the batch folder path if batching is enabled
             target_path = get_target_path(args, folder_name, batch_number)
@@ -553,6 +652,7 @@ def main():
             # Ensure the target folder exists
             os.makedirs(target_path, exist_ok=True)
 
+            # Write the parameter file
             write_param_file(
                 args, target_path, parameter_names, param_values,
                 param_file_name
@@ -566,15 +666,11 @@ def main():
             if args.verbose == 2:
                 print(target_path)
 
-            # Increment batch logic
-            if args.by and (i + 1) % args.by == 0:
-                batch_number += 1
-
     # Initialize counters for folders and batches
     total_folders = len(all_folders)
     total_batches = batch_number if args.by else 0
 
-    # After folder creation
+    # Verbose if needed
     if args.verbose >= 1:
         print("Folders created.")
         if args.by:
@@ -582,7 +678,7 @@ def main():
         else:
             print(f"Total folders created: {total_folders}.")
 
-    # If needed...
+    # Compress if needed
     if args.compress:
         final_compression(args, batch_number)
 
@@ -590,7 +686,9 @@ def main():
     if args.verbose >= 1:
         print("All done.")
 
+    # Exit
     return 0
 
+# Standalone execution
 if __name__ == "__main__":
     sys.exit(main())
