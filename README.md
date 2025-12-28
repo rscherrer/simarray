@@ -346,6 +346,10 @@ Occasional use was made of [ChatGPT](https://chatgpt.com/) and [GitHub Copilot](
 
 This code comes with no guarantee whatsoever.
 
+## Links
+
+* [simarray](https://github.com/rscherrer/simarray): online repository
+
 ## Copyright
 
 Copyright (c) 2025 [Raphaël Scherrer](https://github.com/rscherrer)
